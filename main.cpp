@@ -6,17 +6,6 @@
 #include "tcp-utils.h"
 #include "Server.h"
 
-std::atomic<int> Server::serverNum = 0;
-
-class fileServ: public Server{
-public:
-
-private:
-    static int port;
-};
-
-
-
 int main(int argc, char** argv) {
 
     int opt;

@@ -57,3 +57,5 @@ void Server::decrementServerNum(){
     --serverNum;
     pthread_cond_broadcast(&serverNumCond);
 }
+
+std::atomic<int> Server::serverNum = 0;

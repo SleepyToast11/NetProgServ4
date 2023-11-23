@@ -73,8 +73,14 @@ build CMakeFiles/NetProgServ4.dir/Server.cpp.o: CXX_COMPILER__NetProgServ4_Debug
   OBJECT_DIR = CMakeFiles/NetProgServ4.dir
   OBJECT_FILE_DIR = CMakeFiles/NetProgServ4.dir
 
-build CMakeFiles/NetProgServ4.dir/setest.cpp.o: CXX_COMPILER__NetProgServ4_Debug /home/jerome/CLionProjects/NetProgServ4/setest.cpp || cmake_object_order_depends_target_NetProgServ4
-  DEP_FILE = CMakeFiles/NetProgServ4.dir/setest.cpp.o.d
+build CMakeFiles/NetProgServ4.dir/FileServ.cpp.o: CXX_COMPILER__NetProgServ4_Debug /home/jerome/CLionProjects/NetProgServ4/FileServ.cpp || cmake_object_order_depends_target_NetProgServ4
+  DEP_FILE = CMakeFiles/NetProgServ4.dir/FileServ.cpp.o.d
+  FLAGS = -g -fdiagnostics-color=always -std=gnu++23
+  OBJECT_DIR = CMakeFiles/NetProgServ4.dir
+  OBJECT_FILE_DIR = CMakeFiles/NetProgServ4.dir
+
+build CMakeFiles/NetProgServ4.dir/ShellServ.cpp.o: CXX_COMPILER__NetProgServ4_Debug /home/jerome/CLionProjects/NetProgServ4/ShellServ.cpp || cmake_object_order_depends_target_NetProgServ4
+  DEP_FILE = CMakeFiles/NetProgServ4.dir/ShellServ.cpp.o.d
   FLAGS = -g -fdiagnostics-color=always -std=gnu++23
   OBJECT_DIR = CMakeFiles/NetProgServ4.dir
   OBJECT_FILE_DIR = CMakeFiles/NetProgServ4.dir
@@ -87,7 +93,7 @@ build CMakeFiles/NetProgServ4.dir/setest.cpp.o: CXX_COMPILER__NetProgServ4_Debug
 #############################################
 # Link the executable NetProgServ4
 
-build NetProgServ4: CXX_EXECUTABLE_LINKER__NetProgServ4_Debug CMakeFiles/NetProgServ4.dir/main.cpp.o CMakeFiles/NetProgServ4.dir/SyncServ.cpp.o CMakeFiles/NetProgServ4.dir/tcp-utils.cpp.o CMakeFiles/NetProgServ4.dir/Server.cpp.o CMakeFiles/NetProgServ4.dir/setest.cpp.o
+build NetProgServ4: CXX_EXECUTABLE_LINKER__NetProgServ4_Debug CMakeFiles/NetProgServ4.dir/main.cpp.o CMakeFiles/NetProgServ4.dir/SyncServ.cpp.o CMakeFiles/NetProgServ4.dir/tcp-utils.cpp.o CMakeFiles/NetProgServ4.dir/Server.cpp.o CMakeFiles/NetProgServ4.dir/FileServ.cpp.o CMakeFiles/NetProgServ4.dir/ShellServ.cpp.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/NetProgServ4.dir
   POST_BUILD = :
