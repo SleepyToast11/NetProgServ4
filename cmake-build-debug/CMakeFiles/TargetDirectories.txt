@@ -1,0 +1,3 @@
+/home/jerome/CLionProjects/NetProgServ4/cmake-build-debug/CMakeFiles/NetProgServ4.dir
+/home/jerome/CLionProjects/NetProgServ4/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/jerome/CLionProjects/NetProgServ4/cmake-build-debug/CMakeFiles/rebuild_cache.dir
