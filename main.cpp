@@ -4,71 +4,7 @@
 #include <cstdlib>
 #include <atomic>
 #include "tcp-utils.h"
-
-class Server{
-public:
-    virtual int getPort() = 0;
-
-    int getSockFd() const {return this->sockfd;};
-    static pthread_mutex_t serverNumMutex;
-    static pthread_cond_t serverNumCond;
-
-    int startServer(){
-        int ret;
-
-        incrementServerNum();
-        ret = this->start();
-        decrementServerNum();
-        pthread_cond_broadcast(&serverNumCond);
-
-        return ret;
-    };
-
-    int getPassiveSock(){
-        if(sockfd < 0){
-
-            int ret = passivesocket(getPort(), backlog);
-            sockfd = ret;
-            return ret;
-
-        } else
-            return sockfd;
-    }
-
-    int acceptSock(){
-        if(sockfd < 0)
-            return -1;
-
-        struct sockaddr_in client_addr; // the address of the client...
-        unsigned int client_addr_len = sizeof(client_addr); // ... and its length
-
-        sockfd = accept(sockfd, (struct sockaddr*)&client_addr, &client_addr_len);
-
-        return sockfd;
-    };
-
-    static int getServerNum() { return serverNum; };
-
-    ~Server() {
-        if(sockfd >= 0){
-            shutdown(sockfd, SHUT_RDWR);
-            close(sockfd);
-        }
-    }
-
-private:
-
-    static void incrementServerNum(){ ++serverNum; }
-    static void decrementServerNum(){ --serverNum; }
-    static std::atomic<int> serverNum;
-    int sockfd = -1;
-    virtual int start() = 0;
-    int backlog = 32;
-    int startPassiveSock(){
-        int port = this->getPort();
-        passivesocket(port, backlog);
-    }
-};
+#include "Server.h"
 
 std::atomic<int> Server::serverNum = 0;
 
@@ -77,10 +13,6 @@ public:
 
 private:
     static int port;
-    static int fd;
-    void setSockFd(int sock) override{
-        fileServ::fd = sock;
-    }
 };
 
 
