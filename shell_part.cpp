@@ -115,39 +115,39 @@ CommandResult exec(char command[]) {
     }
 }
 
-void * shellThread(void * arg){
+int shellThread(){
     CommandResult answer;
-    int newSocket = *((int *)arg);
+    int sockFd;
     printf("newSocket Shell OK\n");
     string message_received;
     bool command_done = false;
 
     while(1) {
 
-        message_received = receive_full_message(newSocket);
+        message_received = receive_full_message(sockFd);
 
         if (strcmp(message_received.c_str(), "closed") == 0) {
-            pthread_exit(NULL);
+            return -1;
         }
 
         if (strcmp(message_received.c_str(), "CPRINT") == 0) {
 
             if (!command_done) {
-                send(newSocket, "ERR EIO No command issued\n", 27, 0);
+                send(sockFd, "ERR EIO No command issued\n", 27, 0);
             } else if (answer.exitstatus != 0) {
 
                 string final_result;
                 final_result = "FAIL " + to_string(answer.exitstatus) + " Preceding command failed : " + answer.message;
                 const char *final_result_c_array = final_result.c_str();
-                send(newSocket, final_result_c_array, strlen(final_result_c_array), 0);
+                send(sockFd, final_result_c_array, strlen(final_result_c_array), 0);
 
             } else {
 
                 string final_result;
-                send(newSocket, answer.message.c_str(), strlen(answer.message.c_str()), 0);
+                send(sockFd, answer.message.c_str(), strlen(answer.message.c_str()), 0);
                 final_result = "OK 0 Command was successful\n";
                 const char *final_result_c_array = final_result.c_str();
-                send(newSocket, final_result_c_array, strlen(final_result_c_array), 0);
+                send(sockFd, final_result_c_array, strlen(final_result_c_array), 0);
 
             }
         } else {
@@ -163,7 +163,7 @@ void * shellThread(void * arg){
                 final_result = "FAIL " + to_string(answer.exitstatus) + " : " + answer.message;            }
 
             const char *final_result_c_array = final_result.c_str();
-            send(newSocket, final_result_c_array, strlen(final_result_c_array), 0);
+            send(sockFd, final_result_c_array, strlen(final_result_c_array), 0);
             command_done = true;
         }
     }

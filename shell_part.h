@@ -22,6 +22,6 @@ struct CommandResult{
 void split(char * command, char * argv[]);
 string receive_full_message(int client_socket);
 CommandResult exec(char command[]);
-void * shellThread(void * arg);
+int shellThread(void * arg);
 #endif //UNTITLED_SHELL_PART_H
 
