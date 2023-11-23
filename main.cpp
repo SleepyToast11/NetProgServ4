@@ -41,43 +41,45 @@ int main(int argc, char** argv) {
     bool verbose = false;
     int shellPort = 9002;
     int filePort = 9001;
+    int peerPort = 9003;
     int max_thread = 20;
     int incr_thread = 50;
     bool delay = false;
 
-    while (optind < argc){
-           if((opt = getopt(argc, argv, "t:Ds:f:vdT:p:")) != -1) {
-            switch (opt) {
-                case 't':
-                    incr_thread = atoi(optarg);
-                    break;
-                case 'D':
-                    delay = true;
-                    break;
-                case 's':
-                    shellPort = atoi(optarg);
-                    break;
-                case 'f':
-                    filePort = atoi(optarg);
-                    break;
-                case 'v':
-                    verbose = true;
-                    break;
-                case 'd':
-                    attach = true;
-                    break;
-                case 'T':
-                    max_thread = atoi(optarg);
-                    break;
-                default:
-                    std::cerr << "Usage: " << argv[0]
-                              << " [-t int] [-D] [-s int] [-f int] [-v] [-d] [-T int] [peers...]\n";
-                    return EXIT_FAILURE;
-            }
-        } else {
-               peers.push_back(optarg);
-               optind ++;
-           }
+    while ((opt = getopt(argc, argv, "t:Ds:f:vdT:p:")) != -1) {
+        switch (opt) {
+            case 't':
+                incr_thread = atoi(optarg);
+                break;
+            case 'D':
+                delay = true;
+                break;
+            case 's':
+                shellPort = atoi(optarg);
+                break;
+            case 'f':
+                filePort = atoi(optarg);
+                break;
+            case 'v':
+                verbose = true;
+                break;
+            case 'd':
+                attach = true;
+                break;
+            case 'T':
+                max_thread = atoi(optarg);
+                break;
+            case 'p':
+                peerPort = atoi(optarg);
+            default:
+                std::cerr << "Usage: " << argv[0]
+                          << " [-t int] [-D] [-s int] [-f int] [-v] [-d] [-T int] [peers...]\n";
+                return EXIT_FAILURE;
+        }
+    }
+
+    for(int index = optind; index < argc; index++){
+        peers.push_back(argv[index]);
     }
 
     std::cout << "Peers for replication are: ";
