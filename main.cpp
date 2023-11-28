@@ -7,6 +7,8 @@
 #include "Server.h"
 #include "vector"
 
+
+
 void startWorkers(Server server[], int numServer){
     pthread_t workers[MAX_THREADS + 1];
     int args[MAX_THREADS];

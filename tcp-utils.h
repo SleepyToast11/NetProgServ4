@@ -107,7 +107,7 @@ int controlsocket(const unsigned short, const int);
 
 /*** Receive stuff: ***/
 
-extern const int recv_nodata;
+extern const int nodata;
 
 /*
  * Behaves just like recv with the flags argument 0, except that it
@@ -116,7 +116,7 @@ extern const int recv_nodata;
  * recv_nodata when no data is available, or -1 on error (errno is set
  * accordingly).
  */
-int recv_nonblock(const int sd, char* buf, const size_t max, const int timeout, int *err_ret);
+//int recv_nonblock(const int sd, char* buf, const size_t max, const int timeout, int *err_ret);
 
 /*
  * readline(fd,buf,max) reads a ('\n'-terminated) line from device fd
@@ -131,6 +131,6 @@ int recv_nonblock(const int sd, char* buf, const size_t max, const int timeout, 
  */
 int readline(const int, char*, const size_t);
 
-int non_blocking_send(int sockfd, const char *buffer, size_t length, const int timeout);
+//int non_blocking_send(int sockfd, const char *buffer, size_t length, const int timeout);
 
 #endif //NETPROGSERV4_TCP_UTILS_H

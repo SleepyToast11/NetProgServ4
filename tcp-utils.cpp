@@ -26,7 +26,7 @@ const int err_connect = -3;
 const int err_proto   = -4;
 const int err_bind    = -5;
 const int err_listen  = -6;
-const int recv_nodata = -2;
+const int nodata = -2;
 
 int connectbyport(const char* host, const char* port) {
     return connectbyportint(host,(unsigned short)atoi(port));
@@ -127,29 +127,6 @@ int controlsocket(const unsigned short port, const int backlog) {
     return passivesockaux(port, backlog, INADDR_LOOPBACK);
 }
 
-int recv_nonblock(const int sd, char* buf, const size_t max, const int timeout, int *err_ret) {
-    struct pollfd pollrec;
-    pollrec.fd = sd;
-    pollrec.events = POLLIN;
-
-    *err_ret = 0;
-
-    int polled = poll(&pollrec,1,-1);
-
-    if (polled == 0){
-        *err_ret = recv_nodata;
-        return -1;
-    }
-    if (polled == -1){
-        *err_ret = errno;
-        errno = 0;
-        return -1;
-    }
-
-    return recv(sd,buf,max,0);
-
-}
-
 int readline(const int fd, char* buf, const size_t max) {
     size_t i;
     int begin = 1;
@@ -174,31 +151,4 @@ int readline(const int fd, char* buf, const size_t max) {
     }
     buf[i] = '\0';
     return i;
-}
-
-
-int non_blocking_send(int sockfd, const char *buffer, size_t length, const int timeout) {
-    struct pollfd pfd;
-    int ret;
-
-    pfd.fd = sockfd;
-    pfd.events = POLLOUT;
-
-    ret = poll(&pfd, 1, timeout);
-
-    if (ret == -1) {
-        return errno;
-    } else if (ret == 0) {
-        return -1;
-    }
-
-    if (pfd.revents & POLLOUT) {
-        ssize_t bytes_written = write(sockfd, buffer, length);
-        if (bytes_written < 0) {
-            return -1;
-        }
-
-    }
-
-    return 0;
 }
