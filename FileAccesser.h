@@ -22,6 +22,7 @@ public:
     Message seek_w(off_t offset);
     explicit FileAccessor(std::string fileName);
     FileAccessor(FileAccessor const &accessor);
+    std::string fileName;
 private:
 
     int fd = -1;
@@ -31,7 +32,6 @@ private:
     Message i_read(int bytes) const;
     Message i_seek(off_t offset) const;
     int owners = 0;
-    std::string fileName;
     bool opened = false;
     int MAX_LEN = 1024;
 };

@@ -132,8 +132,8 @@ std::string ErrStr();
  * file has been reached (check for a recv_nodata return instead).
  */
 int readline(const int, char*, const size_t);
-int non_blocking_send(int sockfd, const char *buffer, size_t length, const int timeout);
-int recv_nonblock(const int sd, char* buf, const size_t max, const int timeout, int *err_ret);
+int non_blocking_send(int sockfd, const char *buffer, size_t length);
+int recv_nonblock(const int sd, char* buf, const size_t max, int *err_ret);
 
 //int non_blocking_send(int sockfd, const char *buffer, size_t length, const int timeout);
 

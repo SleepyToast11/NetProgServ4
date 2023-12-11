@@ -165,7 +165,7 @@ int readline(const int fd, char* buf, const size_t max) {
 }
 
 
-int recv_nonblock(const int sd, char* buf, const size_t max, const int timeout, int *err_ret) {
+int recv_nonblock(const int sd, char* buf, const size_t max, int *err_ret) {
     struct pollfd pollrec;
     pollrec.fd = sd;
     pollrec.events = POLLIN;

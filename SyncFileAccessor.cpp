@@ -3,9 +3,10 @@
 #include "tcp-utils.h"
 #include <sys/wait.h>
 #include <unistd.h>
-
 #include <utility>
 #include "Server.h"
+#include <stdio.h>
+#include <string.h>
 
 #define CHECKOPEN \
 if(!open)      \
@@ -182,15 +183,29 @@ void SyncFileAccessor::readSyncClient(int peerIndex, std::shared_ptr<Message> me
         return;
     }
 
+    Message sendMessage = Message(SYNC_READ, bytes, fileName);
 
-
-    if(non_blocking_send(sd, ) < 0){
+    if(non_blocking_send(sd, sendMessage.toCString().value().get(), (size_t) sendMessage.getMessageSize()) < 0){
         close(sd);
         *messageRet = Message(SYNC_FAIL, 0, "");
-        return;}
-    if(recv_nonblock() < 0){
-
+        return;
     }
+
+    size_t bufSize = 1024;
+    char retBuf[bufSize + 1];
+    memset(retBuf, 0, bufSize+1);
+    int recvRet;
+
+    int recvSize = recv_nonblock(sd, retBuf, bufSize, &recvRet);
+
+    if(recvSize < 0){
+        close(sd);
+        *messageRet = Message(SYNC_FAIL, 0, "");
+        return;
+    }
+    close(sd);
+    *messageRet = Message(OK, recvSize, std::string (retBuf))close(sd);
+    *messageRet = Message(SYNC_FAIL, 0, "");
 }
 
 void seekSyncClient(int peerIndex, off_t offset);
