@@ -217,7 +217,7 @@ void SyncFileAccessor::seekSyncClient(int peerIndex, off_t offset){
         return;
     }
 
-    Message sendMessage = Message(SYNC_SEEK, 0, fileName);
+    Message sendMessage = Message(SYNC_SEEK, fileName.size(), fileName);
 
     if(non_blocking_send(sd, sendMessage.toCString().value().get(), (size_t) sendMessage.getMessageSize()) < 0){
         close(sd);
