@@ -209,7 +209,22 @@ void SyncFileAccessor::readSyncClient(int peerIndex, std::shared_ptr<Message> me
     *messageRet = Message(SYNC_FAIL, 0, "");
 }
 
-void seekSyncClient(int peerIndex, off_t offset);
+void SyncFileAccessor::seekSyncClient(int peerIndex, off_t offset){
+    std::tuple<std::string, unsigned short> peer = peers[peerIndex];
+    int sd = connectbyportint((get<0>(peer)).c_str(), get<1>(peer));
+    if(sd < 0) {
+        close(sd);
+        return;
+    }
+
+    Message sendMessage = Message(SYNC_SEEK, 0, fileName);
+
+    if(non_blocking_send(sd, sendMessage.toCString().value().get(), (size_t) sendMessage.getMessageSize()) < 0){
+        close(sd);
+        return;
+    }
+    close(sd);
+}
 
 void SyncFileAccessor::writeSyncClient(int peerIndex, const char* stuff, size_t stuff_length){
     std::tuple<std::string, unsigned short> peer = peers[peerIndex];
