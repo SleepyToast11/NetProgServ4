@@ -210,6 +210,56 @@ void SyncFileAccessor::readSyncClient(int peerIndex, std::shared_ptr<Message> me
 }
 
 void seekSyncClient(int peerIndex, off_t offset);
-void writeSyncClient(int peerIndex, const char* stuff, size_t stuff_length){}
-void closeSyncClient(int peerIndex);
-void openSyncClient(int peerIndex);
+
+void SyncFileAccessor::writeSyncClient(int peerIndex, const char* stuff, size_t stuff_length){
+    std::tuple<std::string, unsigned short> peer = peers[peerIndex];
+    int sd = connectbyportint((get<0>(peer)).c_str(), get<1>(peer));
+    if(sd < 0) {
+        close(sd);
+        return;
+    }
+    std::string sendMessageData = fileName;
+    sendMessageData += std::string(stuff);
+
+    Message sendMessage = Message(SYNC_WRITE, fileName.size(), sendMessageData);
+
+    if(non_blocking_send(sd, sendMessage.toCString().value().get(), (size_t) sendMessage.getMessageSize()) < 0){
+        close(sd);
+        return;
+    }
+    close(sd);
+}
+
+void SyncFileAccessor::closeSyncClient(int peerIndex){
+    std::tuple<std::string, unsigned short> peer = peers[peerIndex];
+    int sd = connectbyportint((get<0>(peer)).c_str(), get<1>(peer));
+    if(sd < 0) {
+        close(sd);
+        return;
+    }
+
+    Message sendMessage = Message(SYNC_CLOSE, fileName.size(), fileName);
+
+    if(non_blocking_send(sd, sendMessage.toCString().value().get(), (size_t) sendMessage.getMessageSize()) < 0){
+        close(sd);
+        return;
+    }
+    close(sd);
+}
+
+void SyncFileAccessor::openSyncClient(int peerIndex){
+    std::tuple<std::string, unsigned short> peer = peers[peerIndex];
+    int sd = connectbyportint((get<0>(peer)).c_str(), get<1>(peer));
+    if(sd < 0) {
+        close(sd);
+        return;
+    }
+
+    Message sendMessage = Message(SYNC_OPEN, fileName.size(), fileName);
+
+    if(non_blocking_send(sd, sendMessage.toCString().value().get(), (size_t) sendMessage.getMessageSize()) < 0){
+        close(sd);
+        return;
+    }
+    close(sd);
+}
