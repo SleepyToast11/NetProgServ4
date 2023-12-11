@@ -29,7 +29,7 @@ Message::Message(enum Status status, int codePara, std::string stringPara){
 }
 
 //returns size including all spaces and null termination
-int Message::getMessageSize() {
+size_t Message::getMessageSize() const {
     if(!data)
         return 0;
 
@@ -103,7 +103,7 @@ int Server::non_blocking_send(const char *buffer, const size_t length, int *err_
     return 0;
 }
 
-std::optional<std::unique_ptr<char>> Message::toCString(){
+std::optional<std::unique_ptr<char>> Message::toCString() const {
     if(!data)
         return std::nullopt;
 

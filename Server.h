@@ -11,7 +11,7 @@
 
 
 enum Status {
-    OK, ERR, FAIL
+    OK, ERR, FAIL, SYNC_FAIL
 };
 
 struct messageData {
@@ -22,15 +22,13 @@ struct messageData {
 
 class Message{
 public:
-    int getMessageSize();
+    size_t getMessageSize() const;
 
-    std::optional<std::unique_ptr<char>> toCString();
+    std::optional<std::unique_ptr<char>> toCString() const;
 
     Message();
 
     Message(enum Status status, int codePara, std::string stringPara);
-
-private:
     std::optional<struct messageData> data;
 };
 
@@ -49,7 +47,7 @@ class Server {
 
         static int getServerNum();
 
-        void start();
+    virtual void start();
 
         ~Server();
 

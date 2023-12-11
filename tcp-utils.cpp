@@ -28,6 +28,11 @@ const int err_bind    = -5;
 const int err_listen  = -6;
 const int nodata = -2;
 
+std::string ErrStr() {
+    char * e = strerror(errno);
+    return e ? e : "";
+}
+
 int connectbyport(const char* host, const char* port) {
     return connectbyportint(host,(unsigned short)atoi(port));
 }
@@ -138,7 +143,7 @@ int readline(const int fd, char* buf, const size_t max) {
             return -1;
         if (begin) {
             if (what == 0)
-                return recv_nodata;
+                return nodata;
             begin = 0;
         }
         if (what == 0 || tmp == '\n' || tmp == '\r') {

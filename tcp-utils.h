@@ -10,6 +10,7 @@
 #include <netdb.h>
 #include <iostream>
 #include <unistd.h>
+#include <string>
 
 
 /*** Error codes: ***/
@@ -109,6 +110,7 @@ int controlsocket(const unsigned short, const int);
 
 extern const int nodata;
 
+std::string ErrStr();
 /*
  * Behaves just like recv with the flags argument 0, except that it
  * does not block more than the number of miliseconds specified by its

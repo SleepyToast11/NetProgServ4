@@ -6,24 +6,21 @@
 #define NETPROGSERV4_FILESERV_H
 
 #include <utility>
-
-#include "unordered_map"
+#include "FileSupervisor.h"
 #include "Server.h"
-#include "SyncServ.h"
+#include <unordered_map>
+
 
 class FileServ : public Server{
 public:
-    int getPort() override;
-    static std::unordered_map<int, int> fds;
-
-    explicit FileServ(SyncServ syncServ):
-            syncServ(std::move(syncServ)){
-    }
-
+    static void setFileSupervisor(std::shared_ptr<FileSupervisor> fileSupervisor);
+    FileServ(FileServ &t);
+    void start() override;
+    static void setPort(int port);
 private:
+    int getPort() override;
     static int port;
-    int start() override;
-    SyncServ syncServ;
+    static std::shared_ptr<FileSupervisor> files;
 };
 
 
