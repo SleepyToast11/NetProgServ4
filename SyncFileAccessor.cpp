@@ -204,11 +204,12 @@ void SyncFileAccessor::readSyncClient(int peerIndex, std::shared_ptr<Message> me
         return;
     }
     close(sd);
-    *messageRet = Message(OK, recvSize, std::string (retBuf))close(sd);
+    *messageRet = Message(OK, recvSize, std::string (retBuf));
+    close(sd);
     *messageRet = Message(SYNC_FAIL, 0, "");
 }
 
 void seekSyncClient(int peerIndex, off_t offset);
-void writeSyncClient(int peerIndex, const char* stuff, size_t stuff_length);
+void writeSyncClient(int peerIndex, const char* stuff, size_t stuff_length){}
 void closeSyncClient(int peerIndex);
 void openSyncClient(int peerIndex);
