@@ -5,10 +5,10 @@
 #include "tcp-utils.h"
 #include <sys/socket.h>
 #include <netdb.h>
-#include <sys/poll.h>
 #include <unistd.h>
 #include <cstring>
-
+#include <fcntl.h>
+#include <poll.h>
 
 /*
  * Miscelanious TCP (and general) functions.  Contains functions that
@@ -18,7 +18,6 @@
  * By Stefan Bruda, using the textbook as inspiration.
  */
 
-#include "tcp-utils.h"
 
 const int err_host    = -1;
 const int err_sock    = -2;
@@ -65,6 +64,13 @@ int connectbyportint(const char* host, const unsigned short port) {
     sd = socket(PF_INET, type, 0);
     if ( sd < 0 )
         return err_sock;
+
+    // Set non-blocking
+    int flags = fcntl(sd, F_GETFL, 0);
+    if (fcntl(sd, F_SETFL, flags | O_NONBLOCK) < 0) {
+        close(sd);
+        return -1;
+    }
 
     // connect socket:
     int rc = connect(sd, (struct sockaddr *)&sin, sizeof(sin));
@@ -156,4 +162,53 @@ int readline(const int fd, char* buf, const size_t max) {
     }
     buf[i] = '\0';
     return i;
+}
+
+
+int recv_nonblock(const int sd, char* buf, const size_t max, const int timeout, int *err_ret) {
+    struct pollfd pollrec;
+    pollrec.fd = sd;
+    pollrec.events = POLLIN;
+
+    *err_ret = 0;
+
+    int polled = poll(&pollrec,1,30);
+
+    if (polled == 0){
+        *err_ret = nodata;
+        return -1;
+    }
+    if (polled == -1){
+        *err_ret = errno;
+        errno = 0;
+        return -1;
+    }
+
+    return recv(sd,buf,max,0);
+}
+
+int non_blocking_send(int sockfd, const char *buffer, size_t length) {
+    struct pollfd pfd;
+    int ret;
+
+    pfd.fd = sockfd;
+    pfd.events = POLLOUT;
+
+    ret = poll(&pfd, 1, 30);
+
+    if (ret == -1) {
+        return errno;
+    } else if (ret == 0) {
+        return -1;
+    }
+
+    if (pfd.revents & POLLOUT) {
+        ssize_t bytes_written = write(sockfd, buffer, length);
+        if (bytes_written < 0) {
+            return -1;
+        }
+
+    }
+
+    return 0;
 }

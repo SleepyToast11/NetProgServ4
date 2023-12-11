@@ -43,12 +43,12 @@ void waitPeers(const std::vector<pid_t>& clientPid){
     }
 }
 
-std::vector<Message> SyncFileAccessor::e_read(int bytes){
-    std::vector<Message> retMessage;
+std::vector<std::shared_ptr<Message>> SyncFileAccessor::e_read(int bytes){
+    std::vector<std::shared_ptr<Message>> retMessage = std::vector<std::shared_ptr<Message>>();
     std::tuple<std::optional<int>, std::optional<std::vector<pid_t>>> pidRet = peerFork();
     if(get<0>(pidRet).has_value()) {
         int peerIndex = get<0>(pidRet).value();
-        readSyncClient(peerIndex, &retMessage[peerIndex], bytes);
+        readSyncClient(peerIndex, retMessage[peerIndex], bytes);
         exit(1); //This should never be reached
     }
     waitPeers(get<1>(pidRet).value());
@@ -94,24 +94,24 @@ void SyncFileAccessor::e_write(const char *stuff, size_t stuff_length) {
 Message SyncFileAccessor::read_w(int bytes){
     CHECKOPEN
     rwlock_start_read();
-    std::vector<Message> allBytes = e_read(bytes);
+    std::vector<std::shared_ptr<Message>> allBytes = e_read(bytes);
 
-    allBytes.push_back(FileAccessor::read_w(bytes));
+    allBytes.push_back(std::make_shared<Message>(FileAccessor::read_w(bytes)));
     size_t max_length = 0;
 
     int failCounter = 0;
     int okCounter = 0;
     // Find the maximum length of the strings in the vector
-    for (const Message& message: allBytes) {
-        if(!message.data.has_value())
+    for (const std::shared_ptr<Message>& message: allBytes) {
+        if(!message->data.has_value())
             continue;
-        (message.data->status == OK) ? okCounter++ : failCounter++;
-        max_length = std::max(max_length, message.data->data.size());
+        (message->data->status == OK) ? okCounter++ : failCounter++;
+        max_length = std::max(max_length, message->data->data.size());
     }
 
     if(failCounter > okCounter) {
         e_seek(-bytes);
-        e_write(allBytes.back().data->data.c_str(), allBytes.back().data->data.size());
+        e_write(allBytes.back()->data->data.c_str(), allBytes.back()->data->data.size());
         return {FAIL, bytes, "Most peers failed to sync. Trying to restore peers using local data"};
     }
     std::string result;
@@ -120,8 +120,8 @@ Message SyncFileAccessor::read_w(int bytes){
         std::vector<int> counts(256, 0);
 
         // Count the characters at the current index
-        for (const Message& message: allBytes) {
-            std::string str = message.data->data;
+        for (const std::shared_ptr<Message>& message: allBytes) {
+            std::string str = message->data->data;
             if (i < str.size()) {
                 ++counts[static_cast<unsigned char>(str[i])];
             }
@@ -171,8 +171,29 @@ Message SyncFileAccessor::seek_w(off_t offset){
     return FileAccessor::seek_w(offset);
 }
 
-SyncFileAccessor::SyncFileAccessor(const FileAccessor &accessor) : FileAccessor(accessor) {
+SyncFileAccessor::SyncFileAccessor(const FileAccessor &accessor) : FileAccessor(accessor) {}
 
+void SyncFileAccessor::readSyncClient(int peerIndex, std::shared_ptr<Message> messageRet, int bytes){
+    std::tuple<std::string, unsigned short> peer = peers[peerIndex];
+    int sd = connectbyportint((get<0>(peer)).c_str(), get<1>(peer));
+    if(sd < 0) {
+        close(sd);
+        *messageRet = Message(SYNC_FAIL, 0, "");
+        return;
+    }
+
+
+
+    if(non_blocking_send(sd, ) < 0){
+        close(sd);
+        *messageRet = Message(SYNC_FAIL, 0, "");
+        return;}
+    if(recv_nonblock() < 0){
+
+    }
 }
 
-
+void seekSyncClient(int peerIndex, off_t offset);
+void writeSyncClient(int peerIndex, const char* stuff, size_t stuff_length);
+void closeSyncClient(int peerIndex);
+void openSyncClient(int peerIndex);

@@ -19,23 +19,21 @@ public:
     Message read_w(int bytes);
     Message seek_w(off_t offset);
     static void setPeers(std::vector<std::tuple<std::string, unsigned short>> peer);
+
 private:
     //external
     void seekSyncClient(int peerIndex, off_t offset);
     void writeSyncClient(int peerIndex, const char* stuff, size_t stuff_length);
-    void readSyncClient(int peerIndex, Message *messageRet, int bytes);
+    void readSyncClient(int peerIndex, std::shared_ptr<Message> messageRet, int bytes);
     void closeSyncClient(int peerIndex);
     void openSyncClient(int peerIndex);
     void e_open();
     void e_close();
     void e_write(const char* stuff, size_t stuff_length); //write should never return a message
-    std::vector<Message> e_read(int bytes);
+    std::vector<std::shared_ptr<Message>> e_read(int bytes);
     void e_seek(off_t offset);
-
     static std::tuple<std::optional<int>, std::optional<std::vector<pid_t>>> peerFork();
     static std::vector<std::tuple<std::string, unsigned short>> peers;
 };
-
-
 
 #endif //NETPROGSERV4_SYNCFILEACCESSOR_H

@@ -11,7 +11,7 @@
 
 
 enum Status {
-    OK, ERR, FAIL, SYNC_FAIL
+    OK, ERR, FAIL, SYNC_FAIL, SYNC_
 };
 
 struct messageData {
