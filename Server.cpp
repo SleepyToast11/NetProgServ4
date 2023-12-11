@@ -17,7 +17,14 @@ using boost::assign::map_list_of;
 const boost::unordered_map<Status,const char*> statusToString = map_list_of
         (OK, "OK")
         (ERR, "ERR")
-        (FAIL, "FAIL");
+        (FAIL, "FAIL")
+        (SYNC_FAIL, "SYNC_FAIL")
+        (SYNC_READ, "SYNC_READ")
+        (SYNC_WRITE, "SYNC_WRITE")
+        (SYNC_SEEK, "SYNC_SEEK")
+        (SYNC_CLOSE, "SYNC_CLOSE")
+        (SYNC_OPEN, "SYNC_OPEN");
+
 
 
 Message::Message(){
