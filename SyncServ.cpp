@@ -1,5 +1,3 @@
 #include "SyncServ.h"
 
-void SyncServ(){
-
-}
+pthread_mutex_t SyncServ::peerFdsMutex = PTHREAD_MUTEX_INITIALIZER;

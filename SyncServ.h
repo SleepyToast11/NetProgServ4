@@ -22,12 +22,13 @@ class SyncServ{
 
             const char refresher = 0;
             write(mainPipe[1], &refresher, sizeof (char));
+
         }
 
         void checkOut(int pipeIn){
-            std::lock_guard<std::mutex> lock(peerFdsMutex);
+            pthread_mutex_lock(peerFdsMutex);
             std::vector<int>::iterator it;
-            it = find()
+            it = find();
         }
 
         explicit SyncServ(std::vector<int> socks){
@@ -35,11 +36,15 @@ class SyncServ{
             pipe(mainPipe);
         }
 
-    private:
-        std::mutex peerFdsMutex;
-        std::vector<int> peersFds;
-        int mainPipe[2] = {0, 0};
-        std::vector<int> orderPipe;
+    SyncServ() {}
+
+private:
+        static pthread_mutex_t peerFdsMutex;
+        static std::vector<int> peersFds;
+        static int mainPipe[2];
+        static std::vector<int> orderPipe;
 };
+
+
 
 #endif //NETPROGSERV4_SYNCSERV_H
