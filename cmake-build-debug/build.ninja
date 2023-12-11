@@ -91,6 +91,30 @@ build CMakeFiles/NetProgServ4.dir/Worker.cpp.o: CXX_COMPILER__NetProgServ4_Debug
   OBJECT_DIR = CMakeFiles/NetProgServ4.dir
   OBJECT_FILE_DIR = CMakeFiles/NetProgServ4.dir
 
+build CMakeFiles/NetProgServ4.dir/FileAccesser.cpp.o: CXX_COMPILER__NetProgServ4_Debug /home/jerome/CLionProjects/NetProgServ4/FileAccesser.cpp || cmake_object_order_depends_target_NetProgServ4
+  DEP_FILE = CMakeFiles/NetProgServ4.dir/FileAccesser.cpp.o.d
+  FLAGS = -g -fdiagnostics-color=always -std=gnu++23
+  OBJECT_DIR = CMakeFiles/NetProgServ4.dir
+  OBJECT_FILE_DIR = CMakeFiles/NetProgServ4.dir
+
+build CMakeFiles/NetProgServ4.dir/FileSupervisor.cpp.o: CXX_COMPILER__NetProgServ4_Debug /home/jerome/CLionProjects/NetProgServ4/FileSupervisor.cpp || cmake_object_order_depends_target_NetProgServ4
+  DEP_FILE = CMakeFiles/NetProgServ4.dir/FileSupervisor.cpp.o.d
+  FLAGS = -g -fdiagnostics-color=always -std=gnu++23
+  OBJECT_DIR = CMakeFiles/NetProgServ4.dir
+  OBJECT_FILE_DIR = CMakeFiles/NetProgServ4.dir
+
+build CMakeFiles/NetProgServ4.dir/readerWriter.cpp.o: CXX_COMPILER__NetProgServ4_Debug /home/jerome/CLionProjects/NetProgServ4/readerWriter.cpp || cmake_object_order_depends_target_NetProgServ4
+  DEP_FILE = CMakeFiles/NetProgServ4.dir/readerWriter.cpp.o.d
+  FLAGS = -g -fdiagnostics-color=always -std=gnu++23
+  OBJECT_DIR = CMakeFiles/NetProgServ4.dir
+  OBJECT_FILE_DIR = CMakeFiles/NetProgServ4.dir
+
+build CMakeFiles/NetProgServ4.dir/SyncFileAccessor.cpp.o: CXX_COMPILER__NetProgServ4_Debug /home/jerome/CLionProjects/NetProgServ4/SyncFileAccessor.cpp || cmake_object_order_depends_target_NetProgServ4
+  DEP_FILE = CMakeFiles/NetProgServ4.dir/SyncFileAccessor.cpp.o.d
+  FLAGS = -g -fdiagnostics-color=always -std=gnu++23
+  OBJECT_DIR = CMakeFiles/NetProgServ4.dir
+  OBJECT_FILE_DIR = CMakeFiles/NetProgServ4.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target NetProgServ4
@@ -99,7 +123,7 @@ build CMakeFiles/NetProgServ4.dir/Worker.cpp.o: CXX_COMPILER__NetProgServ4_Debug
 #############################################
 # Link the executable NetProgServ4
 
-build NetProgServ4: CXX_EXECUTABLE_LINKER__NetProgServ4_Debug CMakeFiles/NetProgServ4.dir/main.cpp.o CMakeFiles/NetProgServ4.dir/SyncServ.cpp.o CMakeFiles/NetProgServ4.dir/tcp-utils.cpp.o CMakeFiles/NetProgServ4.dir/Server.cpp.o CMakeFiles/NetProgServ4.dir/FileServ.cpp.o CMakeFiles/NetProgServ4.dir/ShellServ.cpp.o CMakeFiles/NetProgServ4.dir/Worker.cpp.o
+build NetProgServ4: CXX_EXECUTABLE_LINKER__NetProgServ4_Debug CMakeFiles/NetProgServ4.dir/main.cpp.o CMakeFiles/NetProgServ4.dir/SyncServ.cpp.o CMakeFiles/NetProgServ4.dir/tcp-utils.cpp.o CMakeFiles/NetProgServ4.dir/Server.cpp.o CMakeFiles/NetProgServ4.dir/FileServ.cpp.o CMakeFiles/NetProgServ4.dir/ShellServ.cpp.o CMakeFiles/NetProgServ4.dir/Worker.cpp.o CMakeFiles/NetProgServ4.dir/FileAccesser.cpp.o CMakeFiles/NetProgServ4.dir/FileSupervisor.cpp.o CMakeFiles/NetProgServ4.dir/readerWriter.cpp.o CMakeFiles/NetProgServ4.dir/SyncFileAccessor.cpp.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/NetProgServ4.dir
   POST_BUILD = :
