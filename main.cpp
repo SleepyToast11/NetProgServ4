@@ -6,8 +6,14 @@
 #include "tcp-utils.h"
 #include "Server.h"
 #include "vector"
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <pthread.h>
+#include <netinet/in.h>
+#include <cstring>
 
-
+#define IP_ADRESS "127.0.0.1"
 
 void startWorkers(Server server[], int numServer){
     pthread_t workers[MAX_THREADS + 1];
@@ -90,12 +96,76 @@ int main(int argc, char** argv) {
     }
     std::cout << '\n';
 
-    return EXIT_SUCCESS;
+    //Shell socket
+    int sockFdShell, ret1;
+    struct sockaddr_in serverAddrShell;
 
-    int bgpid = fork();
-    if (bgpid < 0) {
-        perror("startup fork");
-        return 1; }
-    if (bgpid) // parent dies
-        return 0;
+    //File socket
+    int sockFdFile, ret2;
+    struct sockaddr_in serverAddrFile;
+
+    //Shell client socket
+    int clientSocketShell;
+    struct sockaddr_in cliAddrShell;
+
+    //File client socket
+    int clientSocketFile;
+    struct sockaddr_in cliAddrFile;
+
+    socklen_t addr_size;
+
+    sockFdShell = socket(AF_INET, SOCK_STREAM, 0);
+    sockFdFile = socket(AF_INET, SOCK_STREAM, 0);
+
+    if (sockFdShell < 0) {
+        printf("Error in connection.\n");
+        exit(1);
+    }
+
+    if (sockFdFile < 0) {
+        printf("Error in connection.\n");
+        exit(1);
+    }
+
+    printf("Server Shell Socket is created.\n");
+    printf("Server File Socket is created.\n");
+
+    std::memset(&serverAddrShell, '\0',sizeof(serverAddrShell));
+    std::memset(&serverAddrFile, '\0',sizeof(serverAddrFile));
+
+    opt = 1;
+
+    if (setsockopt(sockFdShell, SOL_SOCKET,SO_REUSEADDR | SO_REUSEPORT, &opt,sizeof(opt))) {
+        perror("setsockopt");
+        exit(EXIT_FAILURE);
+    }
+
+    if (setsockopt(sockFdFile, SOL_SOCKET,SO_REUSEADDR | SO_REUSEPORT, &opt,sizeof(opt))) {
+        perror("setsockopt");
+        exit(EXIT_FAILURE);
+    }
+
+    serverAddrShell.sin_family = AF_INET;
+    serverAddrShell.sin_port = htons(shellPort);
+    serverAddrShell.sin_addr.s_addr = inet_addr(IP_ADRESS);
+
+    serverAddrFile.sin_family = AF_INET;
+    serverAddrFile.sin_port = htons(filePort);
+    serverAddrFile.sin_addr.s_addr = inet_addr(IP_ADRESS);
+
+    ret1 = bind(sockFdShell,(struct sockaddr*)&serverAddrShell,sizeof(serverAddrShell));
+    ret2 = bind(sockFdFile,(struct sockaddr*)&serverAddrFile, sizeof(serverAddrFile));
+
+
+    if (ret1 < 0) {
+        printf("Error in binding.\n");
+        exit(1);
+    }
+
+    if (ret2 < 0) {
+        printf("Error in binding.\n");
+        exit(1);
+    }
+
+
 }
