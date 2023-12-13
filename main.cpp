@@ -12,6 +12,7 @@
 #include <pthread.h>
 #include <netinet/in.h>
 #include <cstring>
+#include "ShellServ.h"
 
 #define IP_ADRESS "127.0.0.1"
 
@@ -86,12 +87,12 @@ int main(int argc, char** argv) {
         }
     }
 
-    for(int index = optind; index < argc; index++){
+    for (int index = optind; index < argc; index++) {
         peers.push_back(argv[index]);
     }
 
     std::cout << "Peers for replication are: ";
-    for (const auto &peer : peers) {
+    for (const auto &peer: peers) {
         std::cout << peer << ' ';
     }
     std::cout << '\n';
@@ -130,17 +131,17 @@ int main(int argc, char** argv) {
     printf("Server Shell Socket is created.\n");
     printf("Server File Socket is created.\n");
 
-    std::memset(&serverAddrShell, '\0',sizeof(serverAddrShell));
-    std::memset(&serverAddrFile, '\0',sizeof(serverAddrFile));
+    std::memset(&serverAddrShell, '\0', sizeof(serverAddrShell));
+    std::memset(&serverAddrFile, '\0', sizeof(serverAddrFile));
 
     opt = 1;
 
-    if (setsockopt(sockFdShell, SOL_SOCKET,SO_REUSEADDR | SO_REUSEPORT, &opt,sizeof(opt))) {
+    if (setsockopt(sockFdShell, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
         perror("setsockopt");
         exit(EXIT_FAILURE);
     }
 
-    if (setsockopt(sockFdFile, SOL_SOCKET,SO_REUSEADDR | SO_REUSEPORT, &opt,sizeof(opt))) {
+    if (setsockopt(sockFdFile, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
         perror("setsockopt");
         exit(EXIT_FAILURE);
     }
@@ -153,8 +154,8 @@ int main(int argc, char** argv) {
     serverAddrFile.sin_port = htons(filePort);
     serverAddrFile.sin_addr.s_addr = inet_addr(IP_ADRESS);
 
-    ret1 = bind(sockFdShell,(struct sockaddr*)&serverAddrShell,sizeof(serverAddrShell));
-    ret2 = bind(sockFdFile,(struct sockaddr*)&serverAddrFile, sizeof(serverAddrFile));
+    ret1 = bind(sockFdShell, (struct sockaddr *) &serverAddrShell, sizeof(serverAddrShell));
+    ret2 = bind(sockFdFile, (struct sockaddr *) &serverAddrFile, sizeof(serverAddrFile));
 
 
     if (ret1 < 0) {
@@ -167,5 +168,38 @@ int main(int argc, char** argv) {
         exit(1);
     }
 
+    if (listen(sockFdShell, max_thread) == 0) {
+        printf("Listening to shell port\n");
+    }
 
+    if (listen(sockFdFile, max_thread) == 0) {
+        printf("Listening to file port\n");
+    }
+
+    fd_set read_fds;
+    int max_fd;
+
+    max_fd = (sockFdShell > sockFdFile ? sockFdShell : sockFdFile) + 1;
+
+    while (1) {
+
+        FD_ZERO(&read_fds);
+        FD_SET(sockFdFile, &read_fds);
+        FD_SET(sockFdShell, &read_fds);
+
+        if (select(max_fd, &read_fds, NULL, NULL, NULL) == -1) {
+            perror("select");
+            exit(11);
+        }
+
+        if (FD_ISSET(sockFdShell, &read_fds)) {
+            clientSocketShell = accept(sockFdShell, (struct sockaddr *) &cliAddrShell, &addr_size);
+            //handle shell
+        }
+
+        if (FD_ISSET(sockFdFile, &read_fds)) {
+            clientSocketFile = accept(sockFdFile, (struct sockaddr *) &cliAddrFile, &addr_size);
+            //handle file server thread
+        }
+    }
 }
