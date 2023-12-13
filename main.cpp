@@ -181,9 +181,6 @@ int main(int argc, char** argv) {
 
     max_fd = (sockFdShell > sockFdFile ? sockFdShell : sockFdFile) + 1;
 
-    pthread_t tid[max_thread];
-    int i = 0;
-
     while (1) {
 
         FD_ZERO(&read_fds);
